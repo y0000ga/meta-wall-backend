@@ -13,6 +13,7 @@ import { UserFilterDTO } from '../dto/user/userFilterDto';
 import { PostFilterDTO } from '../dto/post/postFilterDto';
 import { PostRepository } from '../repository/post';
 import { GetFollowingDTO } from '../dto/user/getFollowingDto';
+import { CustomResponseType } from '../type/customResponse.type';
 
 export class UserService {
   private readonly userRepository = new UserRepository();
@@ -38,13 +39,25 @@ export class UserService {
     const user = await this.userRepository.findUser(signInDto);
 
     if (!user) {
-      return next(new AppError('123', '沒有這個使用者', true));
+      return next(
+        new AppError(
+          CustomResponseType.NO_DATA_FOUND,
+          CustomResponseType.NO_DATA_FOUND_MESSAGE + '沒有這個使用者',
+          true,
+        ),
+      );
     }
 
     const auth = await bcrypt.compare(signInDto.password, user.password);
 
     if (!auth) {
-      return next(new AppError('123', '密碼錯誤', true));
+      return next(
+        new AppError(
+          CustomResponseType.NO_DATA_FOUND,
+          CustomResponseType.NO_DATA_FOUND_MESSAGE + '帳號或密碼錯誤',
+          true,
+        ),
+      );
     }
     return user;
   };
@@ -63,7 +76,13 @@ export class UserService {
 
     // 確認舊密碼
     if (!isCompare) {
-      return next(new AppError('123', '舊密碼錯誤', true));
+      return next(
+        new AppError(
+          CustomResponseType.UPDATE_ERROR,
+          CustomResponseType.UPDATE_ERROR_MESSAGE + '舊密碼錯誤',
+          true,
+        ),
+      );
     }
 
     return await this.userRepository.updatePassword(updatePasswordDto);
@@ -75,7 +94,13 @@ export class UserService {
   ) => {
     const { update } = updateProfileDto;
     if (Object.keys(update).length === 0) {
-      return next(new AppError('123', '沒有東西要更新', true));
+      return next(
+        new AppError(
+          CustomResponseType.UPDATE_ERROR,
+          CustomResponseType.UPDATE_ERROR_MESSAGE + '更新內容為空',
+          true,
+        ),
+      );
     }
     return await this.userRepository.updateUser(updateProfileDto, next);
   };

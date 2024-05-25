@@ -2,6 +2,7 @@ import multer from 'multer'; // 處理文件上傳到伺服器
 import path from 'path';
 import { AppError } from '../helper/errorHandler';
 import { IUserReq } from '../type/common.type';
+import { CustomResponseType } from '../type/customResponse.type';
 
 const validImageExtensions = ['.jpg', '.png', '.jpeg'];
 
@@ -33,7 +34,12 @@ const fileFilter = (
   if (!validImageExtensions.includes(extension)) {
     // call callback func 並給 error message
     callback(
-      new AppError('123', '檔案格式錯誤：僅提供 jpg, jpeg, png 格式', true),
+      new AppError(
+        CustomResponseType.UPLOAD_FILE_ERROR,
+        CustomResponseType.UPLOAD_FILE_ERROR_MESSAGE +
+          '檔案格式錯誤，僅提供 jpg, jpeg, png 格式',
+        true,
+      ),
     );
   }
   // 接受檔案

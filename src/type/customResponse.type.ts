@@ -9,7 +9,7 @@ export const enum CustomResponseType {
   UNKNOWN_ERROR_MESSAGE = '不明錯誤',
 
   NO_DATA_FOUND = '6207',
-  NO_DATA_FOUND_MESSAGE = '查無資料',
+  NO_DATA_FOUND_MESSAGE = '查無資料：',
 
   PAGINATION_INFO_MISSING = '6211',
   PAGINATION_INFO_MISSING_MESSAGE = '沒有給適當的分頁資訊',
@@ -18,7 +18,7 @@ export const enum CustomResponseType {
   INSERT_ERROR_MESSAGE = '新增錯誤',
 
   UPDATE_ERROR = '6214',
-  UPDATE_ERROR_MESSAGE = '更新錯誤',
+  UPDATE_ERROR_MESSAGE = '更新錯誤：',
 
   DELETE_ERROR = '6215',
   DELETE_ERROR_MESSAGE = '刪除錯誤',
@@ -43,4 +43,16 @@ export const enum CustomResponseType {
 
   TOKEN_EXPIRED = '6302',
   TOKEN_EXPIRED_MESSAGE = 'token 過期',
+
+  THIRD_PARTY_LOGIN_FAILED = '6303',
+  THIRD_PARTY_LOGIN_FAILED_MESSAGE = '第三方登入失敗：',
+
+  NOT_LOGIN = '6304',
+  NOT_LOGIN_MESSAGE = '使用者尚未登入',
+
+  INVALID_USER = '6305',
+  INVALID_USER_MESSAGE = '使用者驗證錯誤',
+
+  UPLOAD_FILE_ERROR = '6306',
+  UPLOAD_FILE_ERROR_MESSAGE = '上傳檔案錯誤：',
 }

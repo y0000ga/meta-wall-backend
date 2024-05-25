@@ -12,6 +12,7 @@ import { GetFollowingDTO } from '../dto/user/getFollowingDto';
 import { NextFunction } from 'express';
 import { AppError } from '../helper/errorHandler';
 import { updateOptions } from '../helper/constant';
+import { CustomResponseType } from '../type/customResponse.type';
 
 export class UserRepository {
   private createFilter = (userFilterDto: UserFilterDTO) => {
@@ -84,7 +85,13 @@ export class UserRepository {
     );
 
     if (isEmpty || isSame) {
-      return next(new AppError('123', '沒有需要更新的資料', true));
+      return next(
+        new AppError(
+          CustomResponseType.UPDATE_ERROR,
+          CustomResponseType.UPDATE_ERROR_MESSAGE + '使用者沒有需要更新的資料',
+          true,
+        ),
+      );
     }
 
     return await UserModel.findByIdAndUpdate(

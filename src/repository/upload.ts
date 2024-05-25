@@ -1,6 +1,7 @@
 import { NextFunction } from 'express';
 import firebaseAdmin from '../helper/firebase'; // 和 firebase 的中間橋梁
 import { AppError } from '../helper/errorHandler';
+import { CustomResponseType } from '../type/customResponse.type';
 
 const blobConfig = {
   action: 'read' as const, // 權限
@@ -46,7 +47,16 @@ export class UploadRepository {
           blob.getSignedUrl(blobConfig, (err, fileUrl) => {
             // 取得檔案的網址
             if (err || !fileUrl) {
-              reject(next(new AppError('123', '檔案 URL 取得失敗', true)));
+              reject(
+                next(
+                  new AppError(
+                    CustomResponseType.UPLOAD_FILE_ERROR,
+                    CustomResponseType.UPLOAD_FILE_ERROR_MESSAGE +
+                      '檔案 URL 取得失敗',
+                    true,
+                  ),
+                ),
+              );
             } else {
               resolve(fileUrl);
             }
@@ -54,7 +64,15 @@ export class UploadRepository {
         })
         .on('error', () => {
           // 監聽上傳狀態，出現錯誤，觸發 'error' event
-          reject(next(new AppError('123', '上傳失敗', true)));
+          reject(
+            next(
+              new AppError(
+                CustomResponseType.UPLOAD_FILE_ERROR,
+                CustomResponseType.UPLOAD_FILE_ERROR_MESSAGE + '上傳失敗',
+                true,
+              ),
+            ),
+          );
         })
         .end(file.buffer);
     });

@@ -7,6 +7,7 @@ import { logType } from '../helper/constant';
 import bcrypt from 'bcrypt';
 import { throwError } from '../helper/errorHandler';
 import { Role } from '../type/user.type';
+import { CustomResponseType } from '../type/customResponse.type';
 
 const logger = log4js.getLogger(logType.passport);
 
@@ -42,7 +43,12 @@ export const googleOauth = () => {
     }
 
     if (!emails) {
-      return throwError('123', 'google 登入沒有 Email', true);
+      return throwError(
+        CustomResponseType.THIRD_PARTY_LOGIN_FAILED,
+        CustomResponseType.THIRD_PARTY_LOGIN_FAILED_MESSAGE +
+          'Google - 無此 Email',
+        true,
+      );
     }
 
     // 不存在的使用者 => 建立使用者

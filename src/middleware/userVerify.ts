@@ -21,7 +21,13 @@ export const logInVerify = async (
     }
 
     if (!token) {
-      return next(new AppError('123', '尚未登入', true));
+      return next(
+        new AppError(
+          CustomResponseType.NOT_LOGIN,
+          CustomResponseType.NOT_LOGIN_MESSAGE,
+          true,
+        ),
+      );
     }
 
     // 驗證 token 正確性
@@ -38,13 +44,25 @@ export const logInVerify = async (
     const { id } = decoded as { id: string };
 
     if (!id) {
-      return next(new AppError('123', '使用者驗證錯誤', true));
+      return next(
+        new AppError(
+          CustomResponseType.INVALID_USER,
+          CustomResponseType.INVALID_USER_MESSAGE,
+          true,
+        ),
+      );
     }
 
     const user = await UserModel.findById(id, '+password');
 
     if (!user) {
-      return next(new AppError('123', '錯誤的 Token', true));
+      return next(
+        new AppError(
+          CustomResponseType.NOT_LOGIN,
+          CustomResponseType.NOT_LOGIN_MESSAGE,
+          true,
+        ),
+      );
     }
 
     req.user = user;
@@ -67,7 +85,13 @@ export const isAdmin = async (
   next: NextFunction,
 ) => {
   if (!(req.user && (req.user as IUser).role === Role.admin)) {
-    return next(new AppError('123', '權限不足', true));
+    return next(
+      new AppError(
+        CustomResponseType.PERMISSION_DENIED,
+        CustomResponseType.PERMISSION_DENIED_MESSAGE,
+        true,
+      ),
+    );
   }
   next();
 };
