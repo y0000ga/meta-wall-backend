@@ -1,0 +1,391 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Meta Wall",
+    "description": "Meta Wall 的 API",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "Post",
+      "description": "貼文"
+    },
+    {
+      "name": "User",
+      "description": "使用者"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "securityDefinitions": {
+    "Bearer": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "JWT Token"
+    }
+  },
+  "paths": {
+    "/posts": {
+      "get": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "取得貼文列表",
+        "description": "",
+        "parameters": [
+          {
+            "name": "content",
+            "in": "query",
+            "required": false,
+            "description": "模糊搜尋：貼文內容",
+            "type": "string",
+            "example": "某些貼文內容"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "description": "排序標準",
+            "type": "string",
+            "example": "-createdAt"
+          },
+          {
+            "name": "orderBy",
+            "in": "query",
+            "required": false,
+            "description": "排序方式",
+            "type": "string",
+            "example": "asc"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": true,
+            "description": "頁數",
+            "type": "string",
+            "example": "1"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "description": "每頁資料數",
+            "type": "string",
+            "example": "10"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/GetPostsSuccess"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Post"
+        ],
+        "summary": "新增貼文",
+        "description": "",
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "description": "欲新增貼文",
+            "schema": {
+              "$ref": "#/definitions/CreatePostBody"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/CreatePostSuccess"
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "取得使用者列表",
+        "description": "",
+        "responses": {
+          "6000": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/GetUsersSuccess"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GetUsersSuccess": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "6000"
+        },
+        "message": {
+          "type": "string",
+          "example": "成功"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "users": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "asdfasdfasdfasd"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "我的名字"
+                  },
+                  "photo": {
+                    "type": "string",
+                    "example": "https://thumb.fakeface.rest/thumb_male_10_8c02e4e9bdc0e103530691acfca605f18caf1766.jpg"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "ok@gmail.com"
+                  }
+                },
+                "required": [
+                  "_id",
+                  "name",
+                  "photo",
+                  "email"
+                ]
+              }
+            }
+          },
+          "required": [
+            "users"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
+    },
+    "GetPostsSuccess": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "6000"
+        },
+        "message": {
+          "type": "string",
+          "example": "成功"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "posts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "663ccbc8c3521df9ef2c2451"
+                  },
+                  "content": {
+                    "type": "string",
+                    "example": "一則新貼文4"
+                  },
+                  "image": {
+                    "type": "string",
+                    "example": "https://thumb.fakeface.rest/thumb_male_10_8c02e4e9bdc0e103530691acfca605f18caf1766.jpg"
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "663ca0e336d9fb66316534a2"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "John"
+                      },
+                      "photo": {
+                        "type": "string",
+                        "example": "https://thumb.fakeface.rest/thumb_male_10_8c02e4e9bdc0e103530691acfca605f18caf1766.jpg"
+                      }
+                    },
+                    "required": [
+                      "_id",
+                      "name",
+                      "photo"
+                    ]
+                  },
+                  "likes": {
+                    "type": "array",
+                    "example": [],
+                    "items": {}
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "example": "2024-05-09T13:12:40.608Z"
+                  },
+                  "updatedAt": {
+                    "type": "string",
+                    "example": "2024-05-09T13:12:40.608Z"
+                  }
+                },
+                "required": [
+                  "_id",
+                  "content",
+                  "image",
+                  "user",
+                  "likes",
+                  "createdAt",
+                  "updatedAt"
+                ]
+              }
+            }
+          },
+          "required": [
+            "posts"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
+    },
+    "CreatePostBody": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "type": "string",
+          "example": "asdfasdfasdfasd"
+        },
+        "content": {
+          "type": "string",
+          "example": "有趣的貼文內容"
+        },
+        "photo": {
+          "type": "string",
+          "example": "https://thumb.fakeface.rest/thumb_male_10_8c02e4e9bdc0e103530691acfca605f18caf1766.jpg"
+        }
+      },
+      "required": [
+        "user",
+        "content"
+      ]
+    },
+    "CreatePostSuccess": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "6000"
+        },
+        "message": {
+          "type": "string",
+          "example": "成功"
+        },
+        "data": {
+          "type": "object",
+          "properties": {
+            "post": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "example": "663ccbc8c3521df9ef2c2451"
+                },
+                "content": {
+                  "type": "string",
+                  "example": "一則新貼文4"
+                },
+                "image": {
+                  "type": "string",
+                  "example": "https://thumb.fakeface.rest/thumb_male_10_8c02e4e9bdc0e103530691acfca605f18caf1766.jpg"
+                },
+                "user": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "663ca0e336d9fb66316534a2"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "John"
+                    },
+                    "photo": {
+                      "type": "string",
+                      "example": "https://thumb.fakeface.rest/thumb_male_10_8c02e4e9bdc0e103530691acfca605f18caf1766.jpg"
+                    }
+                  },
+                  "required": [
+                    "_id",
+                    "name",
+                    "photo"
+                  ]
+                },
+                "likes": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                },
+                "createdAt": {
+                  "type": "string",
+                  "example": "2024-05-09T13:12:40.608Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "example": "2024-05-09T13:12:40.608Z"
+                }
+              },
+              "required": [
+                "_id",
+                "content",
+                "image",
+                "user",
+                "likes",
+                "createdAt",
+                "updatedAt"
+              ]
+            }
+          },
+          "required": [
+            "post"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "message",
+        "data"
+      ]
+    }
+  }
+}
