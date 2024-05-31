@@ -5,6 +5,7 @@ import { IUserReq } from '../type/common.type';
 import { Role } from '../type/user.type';
 import { IUser, UserModel } from '../model/user';
 import { CustomResponseType } from '../type/customResponse.type';
+import { HttpStatus } from '../type/response.type';
 
 export const logInVerify = async (
   req: IUserReq,
@@ -26,6 +27,7 @@ export const logInVerify = async (
           CustomResponseType.NOT_LOGIN,
           CustomResponseType.NOT_LOGIN_MESSAGE,
           true,
+          HttpStatus.FORBIDDEN,
         ),
       );
     }
@@ -49,6 +51,7 @@ export const logInVerify = async (
           CustomResponseType.INVALID_USER,
           CustomResponseType.INVALID_USER_MESSAGE,
           true,
+          HttpStatus.FORBIDDEN,
         ),
       );
     }
@@ -61,6 +64,7 @@ export const logInVerify = async (
           CustomResponseType.NOT_LOGIN,
           CustomResponseType.NOT_LOGIN_MESSAGE,
           true,
+          HttpStatus.UNAUTHORIZED,
         ),
       );
     }
@@ -80,16 +84,17 @@ export const logInVerify = async (
 };
 
 export const isAdmin = async (
-  req: IUserReq,
+  { user }: IUserReq,
   _res: Response,
   next: NextFunction,
 ) => {
-  if (!(req.user && (req.user as IUser).role === Role.admin)) {
+  if (!(user && (user as IUser).role === Role.admin)) {
     return next(
       new AppError(
         CustomResponseType.PERMISSION_DENIED,
         CustomResponseType.PERMISSION_DENIED_MESSAGE,
         true,
+        HttpStatus.UNAUTHORIZED,
       ),
     );
   }
