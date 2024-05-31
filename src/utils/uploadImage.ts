@@ -24,16 +24,37 @@ const fileFilter = (
     mimetype: 'image/png',
    }
    */
-  file: Express.Multer.File,
+  file: Express.Multer.File | undefined,
   /**
    * @description 篩選完成後要 call 的 callback func.，next 就是一種 callback func.
    */
   callback: multer.FileFilterCallback,
 ) => {
+  if (!file) {
+    return callback(
+      new AppError(
+        CustomResponseType.UPLOAD_FILE_ERROR,
+        CustomResponseType.UPLOAD_FILE_ERROR_MESSAGE + '檔案不可為空',
+        true,
+      ),
+    );
+  }
   const extension = path.extname(file.originalname).toLowerCase();
+
+  if (file.size > 2 * 1024 * 1024) {
+    return callback(
+      new AppError(
+        CustomResponseType.UPLOAD_FILE_ERROR,
+        CustomResponseType.UPLOAD_FILE_ERROR_MESSAGE +
+          '檔案尺寸錯誤，請低於 2MB',
+        true,
+      ),
+    );
+  }
+
   if (!validImageExtensions.includes(extension)) {
     // call callback func 並給 error message
-    callback(
+    return callback(
       new AppError(
         CustomResponseType.UPLOAD_FILE_ERROR,
         CustomResponseType.UPLOAD_FILE_ERROR_MESSAGE +
