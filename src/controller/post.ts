@@ -6,16 +6,20 @@ import { NewCommentDTO } from '../dto/post/newCommentDto';
 import { NewPostDTO } from '../dto/post/newPostDto';
 import { PostFilterDTO } from '../dto/post/postFilterDto';
 import { GetPostsVo } from '../vo/post/getPostsVo';
-import { Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { LikePostDTO } from '../dto/post/likePostDto';
 
 class postController extends BaseController {
   private readonly postService: PostService = new PostService();
 
-  public getPosts = async (req: IGetPostsReq) => {
+  public getPosts = async (
+    req: IGetPostsReq,
+    _res: Response,
+    next: NextFunction,
+  ) => {
     const postFilterDto = new PostFilterDTO(req);
     const { page, limit } = postFilterDto;
-    const info = await this.postService.getPosts(postFilterDto);
+    const info = await this.postService.getPosts(postFilterDto, next);
     // 這裡如果有 error 就會到 default exception
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
@@ -35,8 +39,12 @@ class postController extends BaseController {
     );
   };
 
-  public getPost = async (req: Request) => {
-    const post = await this.postService.getPost(req.params.postId);
+  public getPost = async (
+    { params: { postId } }: Request,
+    _res: Response,
+    next: NextFunction,
+  ) => {
+    const post = await this.postService.getPost(postId, next);
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
       CustomResponseType.OK,
@@ -44,29 +52,41 @@ class postController extends BaseController {
     );
   };
 
-  public likePost = async (req: Request) => {
+  public likePost = async (
+    req: Request,
+    _res: Response,
+    next: NextFunction,
+  ) => {
     const likePostDto = new LikePostDTO(req);
-    const updatedPost = await this.postService.likePost(likePostDto);
+    const post = await this.postService.likePost(likePostDto, next);
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
       CustomResponseType.OK,
-      { post: updatedPost },
+      { post },
     );
   };
 
-  public unlikePost = async (req: Request) => {
+  public unlikePost = async (
+    req: Request,
+    _res: Response,
+    next: NextFunction,
+  ) => {
     const likePostDto = new LikePostDTO(req);
-    const updatedPost = await this.postService.unlikePost(likePostDto);
+    const post = await this.postService.unlikePost(likePostDto, next);
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
       CustomResponseType.OK,
-      { post: updatedPost },
+      { post },
     );
   };
 
-  public commentPost = async (req: ICommentPost) => {
+  public commentPost = async (
+    req: ICommentPost,
+    _res: Response,
+    next: NextFunction,
+  ) => {
     const newCommentDto = new NewCommentDTO(req);
-    const comment = await this.postService.commentPost(newCommentDto);
+    const comment = await this.postService.commentPost(newCommentDto, next);
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
       CustomResponseType.OK,
@@ -74,10 +94,14 @@ class postController extends BaseController {
     );
   };
 
-  public getUserPosts = async (req: Request) => {
+  public getUserPosts = async (
+    req: Request,
+    _res: Response,
+    next: NextFunction,
+  ) => {
     const postFilterDto = new PostFilterDTO(req);
     const { page, limit } = postFilterDto;
-    const info = await this.postService.getPosts(postFilterDto);
+    const info = await this.postService.getPosts(postFilterDto, next);
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
       CustomResponseType.OK,

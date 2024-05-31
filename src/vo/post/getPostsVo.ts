@@ -7,13 +7,13 @@ export class GetPostsVo {
   public readonly limit: number;
 
   constructor(
-    info: { posts: IPost[]; totalCount: number },
+    info: { posts: IPost[]; totalCount: number } | void,
     page: number,
     limit: number,
   ) {
     this.limit = limit;
-    this.totalCount = info.totalCount;
+    this.totalCount = info?.totalCount || 0;
     this.page = page;
-    this.posts = info.posts;
+    this.posts = info?.posts || [];
   }
 }

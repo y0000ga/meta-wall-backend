@@ -1,23 +1,22 @@
 import { SignUpDTO } from '../dto/user/signUpDto';
-import { UserRepository } from '../repository/user';
 import { AppError } from '../helper/errorHandler';
 import bcrypt from 'bcrypt';
 import { IUser } from '../model/user';
-import { NextFunction, Response } from 'express';
+import { NextFunction } from 'express';
 import { FollowDTO } from '../dto/user/followDto';
 import { SignInDTO } from '../dto/user/signInDto';
 import { UpdateProfileDTO } from '../dto/user/updateProfileDto';
 import { UpdatePasswordDTO } from '../dto/user/updatePasswordDto';
-import { Types } from 'mongoose';
 import { UserFilterDTO } from '../dto/user/userFilterDto';
 import { PostFilterDTO } from '../dto/post/postFilterDto';
-import { PostRepository } from '../repository/post';
 import { GetFollowingDTO } from '../dto/user/getFollowingDto';
 import { CustomResponseType } from '../type/customResponse.type';
+import { BaseService } from '.';
 
-export class UserService {
-  private readonly userRepository = new UserRepository();
-  private readonly postRepository = new PostRepository();
+export class UserService extends BaseService {
+  constructor() {
+    super();
+  }
 
   public getUsers = async (userFilterDto: UserFilterDTO) => {
     const users = await this.userRepository.findUsers(userFilterDto);
@@ -25,15 +24,14 @@ export class UserService {
     return { users, totalCount };
   };
 
-  public signUp = async (signUpDto: SignUpDTO, next: NextFunction) => {
+  public signUp = async (signUpDto: SignUpDTO) => {
     const { password } = signUpDto;
     signUpDto.password = await bcrypt.hash(password, 12);
-    return await this.userRepository.createUser(signUpDto, next);
+    return await this.userRepository.createUser(signUpDto);
   };
 
   public signIn = async (
     signInDto: SignInDTO,
-    _res: Response,
     next: NextFunction,
   ): Promise<IUser | void> => {
     const user = await this.userRepository.findUser(signInDto);
@@ -41,8 +39,8 @@ export class UserService {
     if (!user) {
       return next(
         new AppError(
-          CustomResponseType.NO_DATA_FOUND,
-          CustomResponseType.NO_DATA_FOUND_MESSAGE + '沒有這個使用者',
+          CustomResponseType.NOT_EXISTED_USER,
+          CustomResponseType.NOT_EXISTED_USER_MESSAGE + '登入錯誤',
           true,
         ),
       );
@@ -62,8 +60,8 @@ export class UserService {
     return user;
   };
 
-  public getUser = async (id: Types.ObjectId) => {
-    return await this.userRepository.findUserById(id);
+  public getUser = async (id: string, next: NextFunction) => {
+    return await this.checkUserExistence(id, next);
   };
 
   public updatePassword = async (
@@ -105,11 +103,15 @@ export class UserService {
     return await this.userRepository.updateUser(updateProfileDto, next);
   };
 
-  public followUser = async (followDto: FollowDTO) => {
+  public followUser = async (followDto: FollowDTO, next: NextFunction) => {
+    const { targetId } = followDto;
+    await this.checkUserExistence(targetId, next);
     return await this.userRepository.followUser(followDto);
   };
 
-  public unfollowUser = async (followDto: FollowDTO) => {
+  public unfollowUser = async (followDto: FollowDTO, next: NextFunction) => {
+    const { targetId } = followDto;
+    await this.checkUserExistence(targetId, next);
     return await this.userRepository.unfollowUser(followDto);
   };
 

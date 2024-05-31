@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { LikePostDTO } from '../dto/post/likePostDto';
 import { NewPostDTO } from '../dto/post/newPostDto';
 import { PostFilterDTO } from '../dto/post/postFilterDto';
@@ -39,7 +40,7 @@ export class PostRepository {
       });
   };
 
-  public getPostById = async (id: string) => {
+  public getPostById = async (id: Types.ObjectId) => {
     return await PostModel.findById(id)
       .populate({
         path: 'user',

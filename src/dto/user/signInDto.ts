@@ -17,8 +17,8 @@ export class SignInDTO {
     return this._email;
   }
 
-  constructor(req: ISignInReq) {
-    const { account, password, email } = req.body;
+  constructor({ body }: ISignInReq) {
+    const { account, password, email } = body;
     this._account = account;
     this._email = email;
     this._password = password;

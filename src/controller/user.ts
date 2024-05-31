@@ -27,6 +27,7 @@ import { GetUsersVo } from '../vo/user/getUsersVo';
 
 class UserController extends BaseController {
   private readonly userService: UserService = new UserService();
+
   public getUsers = async (req: IGetUsersReq) => {
     const userFilterDto = new UserFilterDTO(req);
     const { page, limit } = userFilterDto;
@@ -39,13 +40,9 @@ class UserController extends BaseController {
     );
   };
 
-  public signUp = async (
-    req: ISignUpReq,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  public signUp = async (req: ISignUpReq) => {
     const signUpDto = new SignUpDTO(req);
-    const user = await this.userService.signUp(signUpDto, next);
+    const user = await this.userService.signUp(signUpDto);
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
       CustomResponseType.OK,
@@ -55,11 +52,11 @@ class UserController extends BaseController {
 
   public signIn = async (
     req: ISignInReq,
-    res: Response,
+    _res: Response,
     next: NextFunction,
   ) => {
     const signInDto = new SignInDTO(req);
-    const user = await this.userService.signIn(signInDto, res, next);
+    const user = await this.userService.signIn(signInDto, next);
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
       CustomResponseType.OK,
@@ -67,9 +64,13 @@ class UserController extends BaseController {
     );
   };
 
-  public getMe = async (req: IUserReq) => {
-    const userId = (req.user as IUser)._id;
-    const me = await this.userService.getUser(userId);
+  public getMe = async (
+    { user }: IUserReq,
+    _res: Response,
+    next: NextFunction,
+  ) => {
+    const userId = (user as IUser)._id;
+    const me = await this.userService.getUser(userId.toString(), next);
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
       CustomResponseType.OK,
@@ -97,17 +98,21 @@ class UserController extends BaseController {
     next: NextFunction,
   ) => {
     const updateProfileDto = new UpdateProfileDTO(req);
-    const newMe = await this.userService.updateProfile(updateProfileDto, next);
+    const user = await this.userService.updateProfile(updateProfileDto, next);
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
       CustomResponseType.OK,
-      newMe,
+      user,
     );
   };
 
-  public followUser = async (req: IUserReq) => {
+  public followUser = async (
+    req: IUserReq,
+    _res: Response,
+    next: NextFunction,
+  ) => {
     const followDto = new FollowDTO(req);
-    const followings = await this.userService.followUser(followDto);
+    const followings = await this.userService.followUser(followDto, next);
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
       CustomResponseType.OK,
@@ -115,9 +120,13 @@ class UserController extends BaseController {
     );
   };
 
-  public unfollowUser = async (req: IUserReq) => {
+  public unfollowUser = async (
+    req: IUserReq,
+    _res: Response,
+    next: NextFunction,
+  ) => {
     const followDto = new FollowDTO(req);
-    const followings = await this.userService.unfollowUser(followDto);
+    const followings = await this.userService.unfollowUser(followDto, next);
     return this.formatResponse(
       CustomResponseType.OK_MESSAGE,
       CustomResponseType.OK,

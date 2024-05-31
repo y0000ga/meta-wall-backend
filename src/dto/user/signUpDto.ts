@@ -37,8 +37,8 @@ export class SignUpDTO {
     };
   }
 
-  constructor(req: ISignUpReq) {
-    const { password, name, email, account, photo } = req.body;
+  constructor({ body }: ISignUpReq) {
+    const { password, name, email, account, photo } = body;
     this._email = email;
     this._name = name;
     this._password = password;

@@ -39,11 +39,10 @@ export class UserRepository {
     return UserModel.countDocuments(filter);
   };
 
-  public createUser = async (signUpDto: SignUpDTO, next: NextFunction) => {
+  public createUser = async (signUpDto: SignUpDTO) => {
     const { user } = signUpDto;
-    return await UserModel.create(user).catch((err) => {
-      return next(new AppError(err.status, err.message, true));
-    });
+    // TODO: 針對重複的 Email 或 Account 進行客製化 Error
+    return await UserModel.create(user);
   };
 
   public updatePassword = async (updatePasswordDto: UpdatePasswordDTO) => {
