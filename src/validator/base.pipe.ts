@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
-import { validationResult } from 'express-validator';
+import { ValidationChain, validationResult } from 'express-validator';
 import { AppError } from '../helper/errorHandler';
 import { CustomResponseType } from '../type/customResponse.type';
 
 export abstract class BasePipe {
   public abstract validation(): any;
+
+  public validatePassword = (password: ValidationChain) =>
+    password.exists().isString().trim().isLength({ min: 8, max: 20 });
 
   protected validationHandler = (
     req: Request,
