@@ -6,6 +6,12 @@ import log4js from '../config/log4js';
 import { TMiddlewareFunc } from '../type/common.type';
 import { logType } from '../helper/constant';
 import { BasePipe } from '../validator/base.pipe';
+import { AppError } from '../helper/errorHandler';
+import {
+  CustomResponseType,
+  IErrorResponse,
+  MongooseServerErrorCode,
+} from '../type/customResponse.type';
 
 const logger = log4js.getLogger(logType.baseRoute);
 
@@ -47,6 +53,20 @@ abstract class BaseRoute {
         .catch((err) => {
           // 這裡會第一個收到各種 error
           logger.error(err);
+          if (err.errorResponse) {
+            const { code, keyValue } = err.errorResponse as IErrorResponse;
+
+            if (code === MongooseServerErrorCode.duplicateKey)
+              return next(
+                new AppError(
+                  CustomResponseType.FORMAT_ERROR,
+                  CustomResponseType.FORMAT_ERROR_MESSAGE +
+                    Object.keys(keyValue).join('、') +
+                    ' 已有人註冊使用',
+                  true,
+                ),
+              );
+          }
           return next(this.controller.formatResponse(err.message, err.status));
         });
     };

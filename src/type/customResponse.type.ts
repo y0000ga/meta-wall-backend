@@ -55,4 +55,28 @@ export const enum CustomResponseType {
 
   UPLOAD_FILE_ERROR = '6306',
   UPLOAD_FILE_ERROR_MESSAGE = '上傳檔案錯誤：',
+
+  NOT_EXISTED_USER = '6307',
+  NOT_EXISTED_USER_MESSAGE = '不存在的用戶',
+
+  NOT_EXISTED_POST = '6308',
+  NOT_EXISTED_POST_MESSAGE = '不存在的貼文',
+
+  NOT_EXISTED_COMMENT = '6309',
+  NOT_EXISTED_COMMENT_MESSAGE = '不存在的留言',
+}
+
+export enum MongooseServerErrorCode {
+  duplicateKey = 11000,
+}
+
+/**
+ * @description from mongoose server error
+ */
+export interface IErrorResponse {
+  index: number;
+  code: MongooseServerErrorCode;
+  errmsg: string;
+  keyPattern: { [key: string]: number };
+  keyValue: { [key: string]: unknown };
 }
