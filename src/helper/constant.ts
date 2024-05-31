@@ -7,9 +7,19 @@ export const schemaOption = {
  * @description 加上以下設定，mongoose 才知道有虛擬欄位要補上
  */
 export const virtualSchemaOption = {
-  toJSON: { virtuals: true },
+  toJSON: {
+    virtuals: true,
+    transform: (_doc: unknown, ret: Record<string, any>) => {
+      delete ret.id;
+      return ret;
+    },
+  },
   toObject: {
     virtuals: true,
+    transform: (_doc: unknown, ret: Record<string, any>) => {
+      delete ret.id;
+      return ret;
+    },
   },
 };
 
